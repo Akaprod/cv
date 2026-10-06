@@ -128,18 +128,30 @@ l'interface (entrée/sortie + quota) reste identique.
 
 ## 🚢 Déploiement
 
-Le build est en mode `standalone` (`next.config.ts`) — idéal pour un VPS Node/PM2/Docker
-sans dépendance Vercel :
+Le build est en mode `standalone` (`next.config.ts`) — idéal pour un VPS **Hostinger**
+(Node/PM2 ou Docker) sans dépendance Vercel. Un **kit complet est fourni** :
+
+| Fichier | Rôle |
+|---|---|
+| `docs/DEPLOIEMENT_HOSTINGER.md` | ⭐ Guide pas à pas (~30 min) : DNS → Node → PM2 → Nginx → HTTPS |
+| `deploy/env.production` | Variables d'environnement production (à copier en `.env`) |
+| `deploy/ecosystem.config.js` | PM2 (port 3000, autorestart, garde mémoire) |
+| `deploy/deploy.sh` | Script unique install → db → build → restart |
+| `deploy/nginx-novacv.conf` | Reverse proxy (préserve les URL `/@pseudo`) + modèle HTTPS |
+| `deploy/Dockerfile` | Option conteneur avec volume persistant |
+
+Version courte :
 
 ```bash
-bun run build
-# .next/standalone/server.js est autonome (statics + public copiés par le script build)
-NODE_ENV=production node .next/standalone/server.js   # PORT par défaut 3000
+cp deploy/env.production .env
+bun install && npm run db:push && npm run build
+pm2 start deploy/ecosystem.config.js
+# puis Nginx + certbot → guide détaillé dans docs/DEPLOIEMENT_HOSTINGER.md
 ```
 
-Checklist HTTPS : passer le cookie de session à `secure: true`
-(`src/lib/auth.ts`) et servir derrière un reverse proxy TLS. Penser au reverse proxy
-pour préserver les URL `/@pseudo` telles quelles.
+Le cookie de session passe automatiquement en `secure` en production
+(`NODE_ENV=production`, géré dans `src/lib/auth.ts`). Le reverse proxy Nginx laisse
+passer les URL `/@pseudo` telles quelles — le rewrite se fait dans l'app (`src/proxy.ts`).
 
 Pour migrer SQLite → PostgreSQL/Supabase plus tard : changer le `provider` dans
 `prisma/schema.prisma`, ajuster `DATABASE_URL`, `db:push` — le schéma ne contient rien

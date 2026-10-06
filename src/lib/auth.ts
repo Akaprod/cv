@@ -32,7 +32,7 @@ export async function createSession(userId: string): Promise<void> {
   store.set(SESSION_COOKIE, token, {
     httpOnly: true,
     sameSite: 'lax',
-    secure: false, // passer à true derrière HTTPS en production
+    secure: process.env.NODE_ENV === 'production', // auto-activé derrière HTTPS en production
     path: '/',
     maxAge: SESSION_DAYS * 24 * 3600,
   })
