@@ -1,0 +1,38 @@
+# Dépendances
+node_modules/
+.pnp
+.pnp.js
+
+# Build Next.js
+.next/
+out/
+build/
+dist/
+next-env.d.ts
+
+# Base de données locale (recréée avec `bun run db:push`)
+db/*.db
+db/*.db-journal
+db/*.sqlite
+
+# Environnement & secrets
+.env
+.env*.local
+.env.production
+
+# Logs
+*.log
+dev.log
+server.log
+
+# Éditeurs / OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+
+# Artefacts sandbox / outils
+tool-results/
+agent-ctx/
+Caddyfile

@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Utilisateurs ────────────────────────────────────────────────────────────
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  passwordHash  String
+  username      String   @unique // pseudo pour le lien public /@username
+  plan          String   @default("FREE") // FREE | PRO
+  locale        String   @default("fr") // langue de l'interface : fr en es de it
+  aiUsed        Int      @default(0) // crédits IA consommés ce mois
+  aiMonth       String? // ex: "2026-10"
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  sessions      Session[]
+  resumes       Resume[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+// ─── CV ──────────────────────────────────────────────────────────────────────
+model Resume {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String   @default("Mon CV")
+  template  String   @default("moderne") // moderne | classique | compact | elegant | minimal
+  accent    String   @default("#047857") // couleur d'accent (hex)
+  sector    String?  // branche sectorielle d'origine (slug) : 'hse', 'tech'… null = général
+  isPublic  Boolean  @default(true) // lien /@pseudo actif ou non
+  views     Int      @default(0)
+  locale    String   @default("fr") // langue du contenu du CV (IA + page publique)
+  data      String   @default("{}") // JSON : ResumeData
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  viewLogs  ViewLog[]
+
+  @@index([sector])
+}
+
+model ViewLog {
+  id        String   @id @default(cuid())
+  resumeId  String
+  resume    Resume   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  referrer  String?
+  createdAt DateTime @default(now())
+}
