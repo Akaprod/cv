@@ -2,8 +2,17 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// ─── Base de données : MySQL Hostinger ──────────────────────────────────────
+// PROVIDER = MYSQL (base u398373271_NovaCV créée dans hPanel).
+// DATABASE_URL (dans .env SUR LE SERVEUR, jamais commité) :
+//   mysql://UTILISATEUR:MOT_DE_PASSE@localhost:3306/NOM_BD
+// ⚠️ Les caractères spéciaux du mot de passe doivent être encodés URL
+//    (ex. '+' → %2B, '@' → %40).
+// SQLite reste utilisé en développement (voir schéma de l'environnement dev) :
+//   DATABASE_URL="file:../db/custom.db" avec provider "sqlite".
+
 datasource db {
-  provider = "sqlite"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -11,7 +20,7 @@ datasource db {
 model User {
   id            String   @id @default(cuid())
   email         String   @unique
-  passwordHash  String
+  passwordHash  String   @db.VarChar(255)
   username      String   @unique // pseudo pour le lien public /@username
   plan          String   @default("FREE") // FREE | PRO
   locale        String   @default("fr") // langue de l'interface : fr en es de it
@@ -44,7 +53,7 @@ model Resume {
   isPublic  Boolean  @default(true) // lien /@pseudo actif ou non
   views     Int      @default(0)
   locale    String   @default("fr") // langue du contenu du CV (IA + page publique)
-  data      String   @default("{}") // JSON : ResumeData
+  data      String   @default("{}") @db.Text // JSON : ResumeData (peut dépasser 191 car.)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   viewLogs  ViewLog[]
@@ -56,6 +65,6 @@ model ViewLog {
   id        String   @id @default(cuid())
   resumeId  String
   resume    Resume   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
-  referrer  String?
+  referrer  String?  @db.Text // URLs UTM potentiellement longues
   createdAt DateTime @default(now())
 }

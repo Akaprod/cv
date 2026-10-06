@@ -64,15 +64,31 @@ cd hightcv
 
 ## 5. Environnement + base de données + build
 
+### 5a. Base MySQL (hPanel)
+
+1. hPanel → **Bases de données → MySQL** → créer une base (ex. `u398373271_HightCV`)
+2. Noter : nom de BD, utilisateur, mot de passe (hôte = `localhost`)
+3. Encoder les caractères spéciaux du mot de passe pour l'URL :
+   `+` → `%2B`, `@` → `%40`, `#` → `%23`, `:` → `%3A`
+
+### 5b. Fichier .env + build
+
 ```bash
-# Fichier .env prêt pour la production (SQLite, aucun secret)
+# Fichier .env à partir du modèle
 cp deploy/env.production .env
+nano .env
+# → DATABASE_URL="mysql://UTILISATEUR:MOT_DE_PASSE_ENC0DÉ@localhost:3306/NOM_BD"
 
 # Dépendances + schéma + build standalone
 bun install        # ou: npm install
-npm run db:push    # crée db/custom.db avec le schéma
+npm run db:push    # crée les tables dans la base MySQL distante
 npm run build      # produit .next/standalone/
 ```
+
+> Vérifier la connexion : `npm run db:push` doit se terminer par
+> « Your database is now in sync with your schema ». Si le serveur refuse
+> la connexion, vérifier que la BD est bien sur le MÊME compte/hosting
+> (localhost ne fonctionne que depuis le serveur lui-même).
 
 ## 6. Lancer avec PM2
 
@@ -141,13 +157,13 @@ cd /var/www/hightcv && git pull && bash deploy/deploy.sh
 ## 11. Sauvegardes (recommandé)
 
 ```bash
-# Cron quotidien de la base SQLite à 3h
+# Cron quotidien de la base MySQL à 3h
 crontab -e
-0 3 * * * sqlite3 /var/www/hightcv/db/custom.db ".backup /root/backups/cv-$(date +\%F).db"
+0 3 * * * mysqldump -u UTILISATEUR -p'MOT_DE_PASSE' NOM_BD | gzip > /root/backups/cv-$(date +\%F).sql.gz
 ```
 
-(Restaurer = remplacer le fichier + `pm2 restart hightcv`. Le passage à PostgreSQL/Supabase
-est documenté dans le README si le volume grandit.)
+(Restaurer : `gunzip < fichier.sql.gz | mysql -u UTILISATEUR -p NOM_BD`.
+Alternative SQLite VPS : remplacer `db/custom.db` + `pm2 restart hightcv`.)
 
 ## 12. Alternative Docker
 
