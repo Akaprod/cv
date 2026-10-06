@@ -66,7 +66,7 @@ export async function clearSession(): Promise<void> {
 // ─── Pseudo : validation + mots réservés ────────────────────────────────────
 const RESERVED = [
   'admin', 'api', 'app', 'www', 'mail', 'support', 'help', 'root',
-  'novacv', 'hseacademy', 'cv', 'dashboard', 'login', 'register', 'pricing',
+  'novacv', 'hightcv', 'hseacademy', 'cv', 'dashboard', 'login', 'register', 'pricing',
   'templates', 'about', 'contact', 'legal', 'privacy', 'terms', 'u', 'hse',
 ]
 

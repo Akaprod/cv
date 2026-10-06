@@ -3,7 +3,7 @@
 module.exports = {
   apps: [
     {
-      name: 'novacv',
+      name: 'hightcv',
       script: '.next/standalone/server.js',
       cwd: __dirname + '/..',
       instances: 1, // SQLite : garder 1 instance (mono-processus)

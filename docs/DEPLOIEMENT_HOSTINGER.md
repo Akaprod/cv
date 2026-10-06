@@ -1,4 +1,4 @@
-# 🚀 Déploiement NovaCV sur Hostinger (VPS)
+# 🚀 Déploiement HightCV sur Hostinger (VPS)
 
 Guide complet pour héberger la plateforme sur un **VPS Hostinger** (Ubuntu 22.04/24.04)
 avec Nginx + PM2, en préservant les URL virales `/@pseudo`. Durée : **~30 minutes**.
@@ -54,12 +54,12 @@ curl -fsSL https://bun.sh/install | bash
 mkdir -p /var/www && cd /var/www
 
 # Option A — HTTPS avec un Personal Access Token GitHub (simple)
-git clone https://github.com/Akaprod/cv.git novacv
+git clone https://github.com/Akaprod/cv.git hightcv
 
 # Option B — SSH avec VOTRE clé (ssh-keygen puis ajoutez-la au compte GitHub)
-git clone git@github.com:Akaprod/cv.git novacv
+git clone git@github.com:Akaprod/cv.git hightcv
 
-cd novacv
+cd hightcv
 ```
 
 ## 5. Environnement + base de données + build
@@ -89,9 +89,9 @@ curl -s http://127.0.0.1:3000/api
 ## 7. Nginx (reverse proxy + préservation des /@pseudo)
 
 ```bash
-cp deploy/nginx-novacv.conf /etc/nginx/sites-available/novacv
-nano /etc/nginx/sites-available/novacv     # remplacer cv.example.com par VOTRE domaine
-ln -s /etc/nginx/sites-available/novacv /etc/nginx/sites-enabled/
+cp deploy/nginx-hightcv.conf /etc/nginx/sites-available/hightcv
+nano /etc/nginx/sites-available/hightcv     # remplacer cv.example.com par VOTRE domaine
+ln -s /etc/nginx/sites-available/hightcv /etc/nginx/sites-enabled/
 rm -f /etc/nginx/sites-enabled/default
 nginx -t && systemctl reload nginx
 ```
@@ -135,7 +135,7 @@ git add -A && git commit -m "..." && git push origin main
 Sur le VPS :
 
 ```bash
-cd /var/www/novacv && git pull && bash deploy/deploy.sh
+cd /var/www/hightcv && git pull && bash deploy/deploy.sh
 ```
 
 ## 11. Sauvegardes (recommandé)
@@ -143,20 +143,20 @@ cd /var/www/novacv && git pull && bash deploy/deploy.sh
 ```bash
 # Cron quotidien de la base SQLite à 3h
 crontab -e
-0 3 * * * sqlite3 /var/www/novacv/db/custom.db ".backup /root/backups/cv-$(date +\%F).db"
+0 3 * * * sqlite3 /var/www/hightcv/db/custom.db ".backup /root/backups/cv-$(date +\%F).db"
 ```
 
-(Restaurer = remplacer le fichier + `pm2 restart novacv`. Le passage à PostgreSQL/Supabase
+(Restaurer = remplacer le fichier + `pm2 restart hightcv`. Le passage à PostgreSQL/Supabase
 est documenté dans le README si le volume grandit.)
 
 ## 12. Alternative Docker
 
 ```bash
-docker build -t novacv deploy/Dockerfile   # ou: docker build -t novacv .
-docker run -d -p 3000:3000 -v novacv_db:/app/db --restart unless-stopped --name novacv novacv
+docker build -t hightcv deploy/Dockerfile   # ou: docker build -t hightcv .
+docker run -d -p 3000:3000 -v hightcv_db:/app/db --restart unless-stopped --name hightcv hightcv
 ```
 
-Le volume `novacv_db` préserve la base entre les redémarrages.
+Le volume `hightcv_db` préserve la base entre les redémarrages.
 
 ---
 
@@ -167,5 +167,5 @@ Le volume `novacv_db` préserve la base entre les redémarrages.
 | `deploy/env.production` | Variables d'environnement production (à copier en `.env`) |
 | `deploy/ecosystem.config.js` | Configuration PM2 (port 3000, restart auto, garde mémoire) |
 | `deploy/deploy.sh` | Script unique : install → db → build → restart |
-| `deploy/nginx-novacv.conf` | Reverse proxy + cache statiques + modèle HTTPS |
+| `deploy/nginx-hightcv.conf` | Reverse proxy + cache statiques + modèle HTTPS |
 | `deploy/Dockerfile` | Option conteneur avec volume persistant |

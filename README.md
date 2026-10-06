@@ -1,8 +1,11 @@
-# NovaCV — Plateforme SaaS de CV en ligne
+# HightCV — Plateforme SaaS de CV en ligne
 
 > ⚠️ **Projet 100 % autonome**, sans aucun lien avec HSE Academy.
-> Le nom de marque (`NovaCV`) et le domaine (`novacv.eu`) sont des **placeholders** :
-> tout se renomme en modifiant 2 constantes (voir [Rebranding](#-rebranding-en-2-minutes)).
+>
+> **HightCV** est le **nom officiel** du projet (oct. 2026).
+> Le domaine n'est pas encore réservé : `hightcv.com` est la valeur provisoire de
+> `DOMAIN` — à ajuster d'une seule constante si le domaine réservé diffère
+> (voir [Rebranding](#-rebranding-en-2-minutes)).
 
 Plateforme SaaS freemium de création de CV : l'utilisateur s'inscrit, remplit ses
 informations dans un éditeur live, choisit un template et une couleur, puis obtient un
@@ -137,7 +140,7 @@ Le build est en mode `standalone` (`next.config.ts`) — idéal pour un VPS **Ho
 | `deploy/env.production` | Variables d'environnement production (à copier en `.env`) |
 | `deploy/ecosystem.config.js` | PM2 (port 3000, autorestart, garde mémoire) |
 | `deploy/deploy.sh` | Script unique install → db → build → restart |
-| `deploy/nginx-novacv.conf` | Reverse proxy (préserve les URL `/@pseudo`) + modèle HTTPS |
+| `deploy/nginx-hightcv.conf` | Reverse proxy (préserve les URL `/@pseudo`) + modèle HTTPS |
 | `deploy/Dockerfile` | Option conteneur avec volume persistant |
 
 Version courte :

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ── Déploiement / mise à jour NovaCV sur VPS Hostinger ──────────────────────
+# ── Déploiement / mise à jour HightCV sur VPS Hostinger ──────────────────────
 # Premier déploiement ou mise à jour :  bash deploy/deploy.sh
 set -euo pipefail
 cd "$(dirname "$0")/.."

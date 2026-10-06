@@ -1,7 +1,7 @@
-# ── Dockerfile NovaCV (alternative au PM2 sur VPS Hostinger) ────────────────
-# Build :  docker build -t novacv .
-# Run  :  docker run -d -p 3000:3000 -v novacv_db:/app/db --name novacv novacv
-# Le volume novacv_db préserve la base SQLite entre les redémarrages.
+# ── Dockerfile HightCV (alternative au PM2 sur VPS Hostinger) ────────────────
+# Build :  docker build -t hightcv .
+# Run  :  docker run -d -p 3000:3000 -v hightcv_db:/app/db --name hightcv hightcv
+# Le volume hightcv_db préserve la base SQLite entre les redémarrages.
 
 FROM oven/bun:1 AS deps
 WORKDIR /app
